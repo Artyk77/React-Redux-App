@@ -1,35 +1,40 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import Loader from 'react-loader-spinner';
-import Launch from './Launch';
-import { getData } from '../actions/index'
-
-
+import React from "react";
+import { connect } from "react-redux";
+import { useSelector } from "react-redux";
+import Launch from "./Launch";
+import { getLaunches } from "../actions/launchListActions";
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import Loader from "react-loader-spinner";
+import { Button } from 'semantic-ui-react';
 
 const LaunchList = props => {
-    console.log('launch props', props)
-    return (
-        <>
-            <h1>Welcome to the SpaceX Launch Directory App</h1>
-            <button onClick={props.getData}>
-                {props.isLoading ? (
-                    <Loader type="BallTriangle" color="#2B2ED2" height="50" width="100" />
-                ) : (
-                        'Get SpaceX Launch Data'
-                    )}
-            </button>
-
-            {props.launches &&
-                props.launches.map(launch => <Launch key={launch.mission_name} launch = {launch} />)}
-        </>
-    );
+  const state = useSelector(state => state);
+  return (
+    <div className="mainContainer">
+          {!state.isLoading && <Button basic onClick={props.getLaunches}>Get Launches</Button>}
+          {state.isLoading ? (
+            <Loader 
+                type="BallTriangle" 
+                color="#367a8d" 
+                height="100" 
+                width="100" 
+            />
+            ) : (
+            state.launches &&
+            state.launches.map(launch => (
+              <Launch launch={launch} key={launch.flight_number} />
+            ))
+          )}
+    {/* <iframe frameBorder="0" className="telemetry" src="https://www2.flightclub.io/result/2d?code=T18V"/> */}
+    </div>
+  );
 };
 
 const mapStateToProps = state => {
-    return {
-        isLoading: state.isLoading,
-        launches: state.launches
-    }
-}
+  return state;
+};
 
-export default connect(mapStateToProps, { getData })(LaunchList)
+export default connect(
+  mapStateToProps,
+  { getLaunches }
+)(LaunchList);

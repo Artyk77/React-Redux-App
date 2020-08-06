@@ -1,29 +1,66 @@
-import React from 'react';
-import { Card } from "shards-react";
-import { Image } from 'semantic-ui-react'
+import React from "react";
+import {
+  Segment,
+  Image,
+  Header,
+  Container,
+  Icon,
+  Modal
+} from "semantic-ui-react";
+
 
 const Launch = props => {
-    console.log('rendering launch props' , props.launch.mission_name)
-    return (
-        <Card>
-        <Image src= {props.launch.links.mission_patch_small} wrapped ui={false} />
-        <Card.Content>
-        <Card.Header>Mission: {props.launch.mission_name}</Card.Header>
-        <Card.Meta>
-            <span className='date'>Mission ID: {props.launch.mission_id}</span>
-        </Card.Meta>
-        <Card.Meta>
-            <span className='date'>Launch Year: {props.launch.launch_year}</span>
-        </Card.Meta>
-        <Card.Meta>
-            <span className='date'>Rocket Info: {props.launch.rocket.rocket_name}</span>
-        </Card.Meta>
-        <Card.Meta>
-            <span className='date'>Launch Site: {props.launch.launch_site.site_name_long}</span>
-        </Card.Meta>
-        </Card.Content>
-    </Card>
-    )
-}
+  return (
+    <Segment>
+      <Header as="h1" textAlign="center">
+        <Image
+          href={props.launch.links.mission_patch}
+          size="small"
+          alt="Mission Patch"
+          src={props.launch.links.mission_patch}
+        />
+        {props.launch.mission_name}
+      </Header>
+      <Container text>
+        <p>
+          <strong>Date:</strong> {props.launch.launch_date_local.slice(0,10)}{" "}
+          {props.launch.telemetry.flight_club && (
+            <a href={props.launch.telemetry.flight_club}>
+              <Icon name="rocket" />
+              View Telemetry
+            </a>
+          )}{" "}
+        </p>
+        <p><strong>Launch Site:</strong> {props.launch.launch_site.site_name_long}</p>
+      </Container>
+        
 
-export default Launch
+
+      <div className="imgsContainer">
+        {props.launch.links.flickr_images.map(image => {
+          return (
+            <Modal basic image centered={true} className="modalClass" trigger={            
+                <Image
+                className="launchImages"
+                // href={image}
+                alt="Launch image"
+                src={image}
+              />}>
+                    <Image wrapped id="modalImg" src={image} size='big'/>
+
+            </Modal>
+
+          );
+        })}
+      </div>
+
+
+
+      <Container compact textAlign="left" text>
+        {props.launch.details}
+      </Container>
+    </Segment>
+  );
+};
+
+export default Launch;
